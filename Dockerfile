@@ -10,8 +10,8 @@ ARG PS_PACKAGE_URL=https://github.com/PowerShell/PowerShell/releases/download/v$
 ARG PS_INSTALL_VERSION=7-lts
 
 # Download the Linux tar.gz and save it
-ADD ${PS_PACKAGE_URL} /tmp/linux.tar.gz
-
+# ADD ${PS_PACKAGE_URL} /tmp/linux.tar.gz
+RUN wget -O /tmp/linux.tar.gz ${PS_PACKAGE_URL}
 # define the folder we will be installing PowerShell to
 ENV PS_INSTALL_FOLDER=/opt/microsoft/powershell/$PS_INSTALL_VERSION
 
@@ -44,9 +44,7 @@ ENV PS_INSTALL_FOLDER=/opt/microsoft/powershell/$PS_INSTALL_VERSION \
 
 # Install Terraform
 ENV TERRAFORM_VERSION=0.12.16
-ARG TERRAFORM_URL=https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-ADD ${TERRAFORM_URL} /tmp/terraform.zip
-
+RUN wget -O /tmp/terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 
 # Install dotnet dependencies and ca-certificates
 RUN apk add --no-cache \
@@ -70,7 +68,9 @@ RUN apk add --no-cache \
     curl \
     jq \
     vim \
-    python \
+    python3 \
+    python3-dev  \
+    ansible \
     bash \
     openssl \
     git \
@@ -94,6 +94,8 @@ RUN apk add --no-cache \
     && ln -s ${PS_INSTALL_FOLDER}/pwsh /usr/bin/pwsh-preview \
     # Give all user execute permissions and remove write permissions for others
     && chmod a+x,o-w ${PS_INSTALL_FOLDER}/pwsh \
+    # Upgrade pip
+    && pip3 install --no-cache-dir --upgrade pip \
     # intialize powershell module cache
     && pwsh \
         -NoLogo \
@@ -109,8 +111,8 @@ RUN apk add --no-cache \
 ADD ./vmware-ovftool /usr/lib/vmware-ovftool
 RUN cd /tmp && \
     unzip terraform.zip -d /usr/bin && \
-    wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub &&\
-    wget -q -O /tmp/glibc-2.31-r0.apk https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.31-r0/glibc-2.31-r0.apk &&\
+    wget -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub &&\
+    wget -O /tmp/glibc-2.31-r0.apk https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.31-r0/glibc-2.31-r0.apk &&\
     apk add /tmp/glibc-2.31-r0.apk &&\
     chmod +x /usr/lib/vmware-ovftool/ovftool* &&\
     ln -s /usr/lib/vmware-ovftool/ovftool /usr/bin/ovftool &&\
