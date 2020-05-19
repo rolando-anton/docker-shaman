@@ -84,6 +84,7 @@ RUN apk add --no-cache \
     go \
     less \
     expect \
+    qemu-img \
     && apk -X http://dl-cdn.alpinelinux.org/alpine/edge/main add --no-cache \
     lttng-ust \
     \
