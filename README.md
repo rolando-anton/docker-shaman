@@ -20,6 +20,15 @@ The list of the most relevant tools are:
      - sshpass
      - qemu-img
 
+
+To build, download the OVFTool distribution from the VMware site, then extract the files from the installation file:
+
+sh ./VMware-ovftool-*-lin.x86_64.bundle --extract ./ovftoolfiles/
+
+then you copy the ./ovftoolfiles/ content
+
+docker build -t shaman . 
+
 Usage example:
 
 docker run --rm -it rolandoanton/shaman:latest bash
