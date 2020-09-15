@@ -43,7 +43,7 @@ ENV PS_INSTALL_FOLDER=/opt/microsoft/powershell/$PS_INSTALL_VERSION \
 
 
 # Install Terraform
-ENV TERRAFORM_VERSION=0.12.16
+ENV TERRAFORM_VERSION=0.13.2
 RUN wget -O /tmp/terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 
 # Install dotnet dependencies and ca-certificates
